@@ -43,7 +43,7 @@ module.exports = function(grunt) {
       src: {
         options: {
           // stripBanners: true
-          banner: 'angular.module("Endpoint")\n' +
+          banner: 'angular.module("Endpoint", [])\n' +
           '.service("Endpoint", [\n' +
           '"$http",\n' +
           '"$q",\n' +

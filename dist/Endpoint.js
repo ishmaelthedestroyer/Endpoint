@@ -1,4 +1,4 @@
-angular.module("Endpoint")
+angular.module("Endpoint", [])
 .service("Endpoint", [
 "$http",
 "$q",
