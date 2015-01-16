@@ -1,4 +1,5 @@
-app.service("Endpoint", [
+angular.module("Endpoint")
+.service("Endpoint", [
 "$http",
 "$q",
 "$log",
