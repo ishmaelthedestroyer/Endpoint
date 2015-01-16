@@ -1,0 +1,19 @@
+{
+  "name": "Endpoint",
+  "version": "0.0.0",
+  "description": "Angular HTTP wrapper.",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ishmaelthedestroyer/Endpoint.git"
+  },
+  "author": "ishmaelthedestroyer <ishmaelthedestroyer@gmail.com> (http://ishmaelthedestroyer.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ishmaelthedestroyer/Endpoint/issues"
+  },
+  "homepage": "https://github.com/ishmaelthedestroyer/Endpoint"
+}
