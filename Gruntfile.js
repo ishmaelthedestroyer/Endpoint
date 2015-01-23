@@ -48,7 +48,8 @@ module.exports = function(grunt) {
           '"$http",\n' +
           '"$q",\n' +
           '"$log",\n' +
-          'function($http, $q, $log) {\n\n',
+          '"Util",\n' +
+          'function($http, $q, $log, util) {\n\n',
           footer: '\n\n}' +
           '\n]);'
         },

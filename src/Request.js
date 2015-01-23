@@ -16,9 +16,12 @@ var Request = function(options) {
   return this;
 };
 
+/**
+ * configures the HTTP request
+ * @param options
+ * @returns {Request}
+ */
 Request.prototype.config = function(options) {
-  // TODO: ...
-
   options = angular.extend(angular.copy(settings), options || {});
 
   if (options.onSuccess) {
@@ -50,11 +53,16 @@ Request.prototype.config = function(options) {
   return this;
 };
 
+/**
+ * constructs and performs the HTTP request
+ * @returns {$q.promise}
+ */
 Request.prototype.execute = function() {
   var
     deferred = $q.defer(),
     options = this.options,
-    url = options.url || (options.baseUrl || '') + (options.path || '');
+    url = options.url || (options.baseUrl || '') + (options.path || ''),
+    throttleKey;
 
   if (options.addHeaders) {
     var copyOfPersistentHeaders = angular.copy(persistentHeaders);
@@ -66,8 +74,35 @@ Request.prototype.execute = function() {
     options.params = angular.extend(copyOfPersistentParams, options.params || {});
   }
 
-  // delete options.url;
-  // delete options.path;
+  if (options.basicAuth) {
+    if (options.basicAuth instanceof Array) {
+      if (options.basicAuth.length !== 2) {
+        deferred.reject('Must pass two items in `basicAuth` array.');
+        return deferred.promise;
+      }
+
+      options.headers.Authorization = constructBasicAuthHeader(
+        options.basicAuth[0],
+        options.basicAuth[1]
+      );
+    } else {
+      deferred.reject('Must pass array to `basicAuth` function.');
+      return deferred.promise;
+    }
+  }
+
+  throttleKey = options.method + (options.url || options.path);
+  if (options.headers) throttleKey += JSON.stringify(options.headers);
+  if (options.params) throttleKey += JSON.stringify(options.params);
+
+  if (throttle[throttleKey]) {
+    $log.debug(TAG + 'Request::execute', 'Throttling request.');
+    return throttle[throttleKey];
+  }
+
+  throttle[throttleKey] = deferred.promise;
+
+  delete options.basicAuth;
   delete options.addParams;
   delete options.addHeaders;
 
@@ -76,8 +111,11 @@ Request.prototype.execute = function() {
     url: url,
     data: options.data,
     params: options.params,
-    headers: options.headers
+    headers: options.headers,
+    file: options.file || null
   }).then(function(response) {
+    delete throttle[throttleKey];
+
     try {
       return deferred.resolve(response.data || response);
     } catch (e) {
@@ -85,6 +123,7 @@ Request.prototype.execute = function() {
       return deferred.resolve(response);
     }
   }, function(error) {
+    delete throttle[throttleKey];
     return deferred.reject(error);
   });
 
