@@ -15,7 +15,8 @@ var
     onSuccess: null,
     onError: null,
     addHeaders: true,
-    addParams: true
+    addParams: true,
+    throttle: false
   },
 
   /**

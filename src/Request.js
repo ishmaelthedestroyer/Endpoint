@@ -91,17 +91,20 @@ Request.prototype.execute = function() {
     }
   }
 
-  throttleKey = options.method + (options.url || options.path);
-  if (options.headers) throttleKey += JSON.stringify(options.headers);
-  if (options.params) throttleKey += JSON.stringify(options.params);
+  if (options.throttle) {
+    throttleKey = options.method + (options.url || options.path);
+    if (options.headers) throttleKey += JSON.stringify(options.headers);
+    if (options.params) throttleKey += JSON.stringify(options.params);
 
-  if (throttle[throttleKey]) {
-    $log.debug(TAG + 'Request::execute', 'Throttling request.');
-    return throttle[throttleKey];
+    if (throttle[throttleKey]) {
+      $log.debug(TAG + 'Request::execute', 'Throttling request.');
+      return throttle[throttleKey];
+    }
   }
 
   throttle[throttleKey] = deferred.promise;
 
+  delete options.throttle;
   delete options.basicAuth;
   delete options.addParams;
   delete options.addHeaders;
