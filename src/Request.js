@@ -99,6 +99,7 @@ Request.prototype.execute = function() {
     throttleKey = options.method + url;
     if (options.headers) throttleKey += JSON.stringify(options.headers);
     if (options.params) throttleKey += JSON.stringify(options.params);
+    if (options.data) throttleKey += JSON.stringify(options.data);
 
     if (throttle[throttleKey]) {
       $log.debug(TAG + 'Request::execute', 'Throttling request.');
