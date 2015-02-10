@@ -132,6 +132,10 @@ Request.prototype.execute = function() {
     url = options.url || (options.baseUrl || '') + (options.path || ''),
     throttleKey;
 
+  if (options.map) {
+    url = util.mapStrings(url, options.map);
+  }
+
   if (options.addHeaders) {
     var copyOfPersistentHeaders = angular.copy(persistentHeaders);
     options.headers = angular.extend(copyOfPersistentHeaders, options.headers || {});
@@ -160,7 +164,7 @@ Request.prototype.execute = function() {
   }
 
   if (options.throttle) {
-    throttleKey = options.method + (options.url || options.path);
+    throttleKey = options.method + url;
     if (options.headers) throttleKey += JSON.stringify(options.headers);
     if (options.params) throttleKey += JSON.stringify(options.params);
 
@@ -172,6 +176,7 @@ Request.prototype.execute = function() {
 
   throttle[throttleKey] = deferred.promise;
 
+  delete options.map;
   delete options.throttle;
   delete options.basicAuth;
   delete options.addParams;
